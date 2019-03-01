@@ -71,8 +71,7 @@ message getReturnMsg {
 ** returns an RLP serialized byte[] Block
 */
 message getBlockByNumberInputMsg {
-  // [TODO:] BlockNumber: uint32 / uint64?
-  uint64 blockNumber = 1;
+  int64 blockNumber = 1;
 }
 
 /*
