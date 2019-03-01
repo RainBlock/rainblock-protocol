@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package blockchainproto;
+package verifierToStorageProto;
 
 /*
 ** Serialized Block
@@ -70,9 +70,18 @@ message getReturnMsg {
 ** GetBlockByNumber gets a number as an input and
 ** returns an RLP serialized byte[] Block
 */
+message getBlockByNumberInputMsg {
+  // [TODO:] BlockNumber: uint32 / uint64?
+  uint64 blockNumber = 1;
+}
 
-message getBlockInputMsg {
-  uint64 blockNumber = 1;  
+/*
+** GetBlockByHash (blockHash) => Block
+** GetBlockByHash receives a hash as an input and
+** returns an RLP serialized byte[] Block
+*/
+message getBlockByHashInputMsg {
+  bytes blockHash = 1;
 }
 
 message getBlockReturnMsg {
