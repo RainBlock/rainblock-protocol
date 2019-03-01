@@ -84,6 +84,16 @@ message getBlockByHashInputMsg {
   bytes blockHash = 1;
 }
 
+/*
+** GetBlockByMiner (blockHash) => Block
+** GetBlockByMiner receives a minerId as an input and
+** returns an RLP serialized byte[] of the latest Block
+** mined by the miner corresponding to minerId
+*/
+message getBlockByMinerInputMsg {
+  bytes minerId = 1;
+}
+
 message getBlockReturnMsg {
   blockMsg block = 1;
 }
