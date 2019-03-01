@@ -67,6 +67,17 @@ message getBlockReturnMsg {
 }
 
 /*
+** getRecentMiner is an empty message which returns a
+** message with the coinbase of the most recent block
+*/
+message getRecentMinerInputMsg {
+}
+
+message getRecentMinerReturnMsg {
+  bytes coibase = 1;
+}
+
+/*
 ** verifyWitness (root, key, witness) => Boolean
 ** root, key are both byte[]
 ** witness is a byte[] of 
