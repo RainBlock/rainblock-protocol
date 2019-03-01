@@ -20,12 +20,11 @@ message kvpairMsg {
 
 /*
 ** Storage node should be initialized with a Genesis Block
-** So we need a function PutGenesis (genesisBlock, putOps, delOps)
+** So we need a function PutGenesis (genesisBlock, putOps)
 */
 message putGenesisMsg {
   blockMsg genesis = 1;
   repeated kvpairMsg inserts = 2;
-  repeated bytes deletes = 3;  
 }
 
 /*
