@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package blockchainproto;
+
+/*
+** Serialized Block
+*/
+message blockMsg {
+  bytes block_data = 1; 
+}
+
+/*
+** Storage nodes should be given a list of key value pairs
+** to insert and a list of keys to delete in one batch operation
+*/
+message kvpairMsg {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+/*
+** Storage node should be initialized with a Genesis Block
+** So we need a function PutGenesis (genesisBlock, putOps, delOps)
+*/
+message putGenesisMsg {
+  blockMsg genesis = 1;
+  repeated kvpairMsg inserts = 2;
+  repeated bytes deletes = 3;  
+}
+
+/*
+** Every Block update to the storage node should have the block;
+** list of key value pairs to be inserted and a list of keys to delete.
+** 
+** So Update (Block, putOps, delOps)
+*/
+message updateMsg {
+  blockMsg block = 1;
+  repeated kvpairMsg inserts = 2;
+  repeated bytes deletes = 3;
+}
+
+/*
+** The Update (Block, putOps, delOps) => rootHash
+** So a return message for the Update function
+*/
+message updateReturnMsg {
+  bytes root = 1;
+}
+
+/*
+** Get (key, root): Returns the value of the key at the "root"
+** If root is not specified returns the value at the latest root.
+*/
+message getInputMsg {
+  bytes key = 1;
+  bytes root = 2;
+}
+
+/*
+** Get (key) => {value, proof}
+** Value is a byte[] and proof is also an RLP serialized byte[]
+*/
+message getReturnMsg {
+  bytes value = 1;
+  bytes proof = 2;
+}
+
+/*
+** GetBlockByNumber (number) => Block
+** GetBlockByNumber gets a number as an input and
+** returns an RLP serialized byte[] Block
+*/
+
+message getBlockInputMsg {
+  uint64 blockNumber = 1;  
+}
+
+message getBlockReturnMsg {
+  blockMsg block = 1;
+}
+
+/*
+** verifyWitness (root, key, witness) => Boolean
+** root, key are both byte[]
+** witness is a byte[] of 
+** RLP serialized stack of RLP serialized nodes
+*/
+message verifyWitnessInputMsg {
+  bytes root = 1;
+  bytes key = 2;
+  bytes witness = 3;
+}
+
+message verifyWitnessReturnMsg {
+  bool result = 1;
+}
