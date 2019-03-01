@@ -2,33 +2,36 @@ syntax = "proto3";
 
 package verifierToStorageProto;
 
+service get {
+  rpc get (getInputMsg) returns (getReturnMsg) {}
+}
+
+service getBlockByNumber {
+  rpc getBlockByNumber (getBlockByNumberInputMsg) returns (blockMsg) {}
+}
+
+service getBlockByHash {
+  rpc getBlockByHash (getBlockByHashInputMsg) returns (blockMsg) {}
+}
+
+service getRecentMiner {
+  rpc getRecentMiner (getRecentMinerInputMsg) returns (getRecentMinerReturnMsg) {}
+}
+
+service verifyWitness {
+  rpc verifyWitness (verifyWitnessInputMsg) returns (verifyWitnessReturnMsg) {}
+}
+
 /*
 ** Serialized Block
 */
 message blockMsg {
-  bytes block_data = 1; 
+  bytes block_data = 1;
 }
 
 /*
-** Storage nodes should be given a list of key value pairs
-** to insert and a list of keys to delete in one batch operation
-*/
-message kvpairMsg {
-  bytes key = 1;
-  bytes value = 2;
-}
-
-/*
-** The Update (Block, putOps, delOps) => rootHash
-** So a return message for the Update function
-*/
-message updateReturnMsg {
-  bytes root = 1;
-}
-
-/*
-** Get (key, root): Returns the value of the key at the "root"
-** If root is not specified returns the value at the latest root.
+** get (key, root): Returns the value of the key at the "root"
+** If root is not specified returns the value at the latest "root".
 */
 message getInputMsg {
   bytes key = 1;
@@ -36,7 +39,7 @@ message getInputMsg {
 }
 
 /*
-** Get (key) => {value, proof}
+** get (key) => {value, proof}
 ** Value is a byte[] and proof is also an RLP serialized byte[]
 */
 message getReturnMsg {
@@ -45,8 +48,8 @@ message getReturnMsg {
 }
 
 /*
-** GetBlockByNumber (number) => Block
-** GetBlockByNumber gets a number as an input and
+** getBlockByNumber (number) => Block
+** getBlockByNumber gets a number as an input and
 ** returns an RLP serialized byte[] Block
 */
 message getBlockByNumberInputMsg {
@@ -54,16 +57,12 @@ message getBlockByNumberInputMsg {
 }
 
 /*
-** GetBlockByHash (blockHash) => Block
-** GetBlockByHash receives a hash as an input and
+** getBlockByHash (blockHash) => Block
+** getBlockByHash receives a hash as an input and
 ** returns an RLP serialized byte[] Block
 */
 message getBlockByHashInputMsg {
   bytes blockHash = 1;
-}
-
-message getBlockReturnMsg {
-  blockMsg block = 1;
 }
 
 /*
