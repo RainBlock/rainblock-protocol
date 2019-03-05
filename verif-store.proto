@@ -2,54 +2,24 @@ syntax = "proto3";
 
 package verifierToStorageProto;
 
+service get {
+  rpc get (getInputMsg) returns (getReturnMsg) {};
+  rpc getBlockByNumber (getBlockByNumberInputMsg) returns (blockMsg) {};
+  rpc getBlockByHash (getBlockByHashInputMsg) returns (blockMsg) {};
+  rpc getRecentMiner (getRecentMinerInputMsg) returns (getRecentMinerReturnMsg) {};
+  rpc verifyWitness (verifyWitnessInputMsg) returns (verifyWitnessReturnMsg) {};
+}
+
 /*
 ** Serialized Block
 */
 message blockMsg {
-  bytes block_data = 1; 
+  bytes block_data = 1;
 }
 
 /*
-** Storage nodes should be given a list of key value pairs
-** to insert and a list of keys to delete in one batch operation
-*/
-message kvpairMsg {
-  bytes key = 1;
-  bytes value = 2;
-}
-
-/*
-** Storage node should be initialized with a Genesis Block
-** So we need a function PutGenesis (genesisBlock, putOps)
-*/
-message putGenesisMsg {
-  blockMsg genesis = 1;
-  repeated kvpairMsg inserts = 2;
-}
-
-/*
-** Every Block update to the storage node should have the block;
-** list of key value pairs to be inserted and a list of keys to delete.
-** 
-** So Update (Block, putOps, delOps)
-*/
-message updateMsg {
-  blockMsg block = 1;
-  repeated kvpairMsg inserts = 2;
-  repeated bytes deletes = 3;
-}
-
-/*
-** The Update (Block, putOps, delOps) => rootHash
-** So a return message for the Update function
-*/
-message updateReturnMsg {
-  bytes root = 1;
-}
-
-/*
-** Get (key, root): Returns the value of the key at the "root"
-** If root is not specified returns the value at the latest root.
+** get (key, root): Returns the value of the key at the "root"
+** If root is not specified returns the value at the latest "root".
 */
 message getInputMsg {
   bytes key = 1;
@@ -57,7 +27,7 @@ message getInputMsg {
 }
 
 /*
-** Get (key) => {value, proof}
+** get (key) => {value, proof}
 ** Value is a byte[] and proof is also an RLP serialized byte[]
 */
 message getReturnMsg {
@@ -66,8 +36,8 @@ message getReturnMsg {
 }
 
 /*
-** GetBlockByNumber (number) => Block
-** GetBlockByNumber gets a number as an input and
+** getBlockByNumber (number) => Block
+** getBlockByNumber gets a number as an input and
 ** returns an RLP serialized byte[] Block
 */
 message getBlockByNumberInputMsg {
@@ -75,8 +45,8 @@ message getBlockByNumberInputMsg {
 }
 
 /*
-** GetBlockByHash (blockHash) => Block
-** GetBlockByHash receives a hash as an input and
+** getBlockByHash (blockHash) => Block
+** getBlockByHash receives a hash as an input and
 ** returns an RLP serialized byte[] Block
 */
 message getBlockByHashInputMsg {
@@ -84,17 +54,14 @@ message getBlockByHashInputMsg {
 }
 
 /*
-** GetBlockByMiner (blockHash) => Block
-** GetBlockByMiner receives a minerId as an input and
-** returns an RLP serialized byte[] of the latest Block
-** mined by the miner corresponding to minerId
+** getRecentMiner is an empty message which returns a
+** message with the coinbase of the most recent block
 */
-message getBlockByMinerInputMsg {
-  bytes minerId = 1;
+message getRecentMinerInputMsg {
 }
 
-message getBlockReturnMsg {
-  blockMsg block = 1;
+message getRecentMinerReturnMsg {
+  bytes coinBase = 1;
 }
 
 /*
