@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package verifierToStorageProto;
 
-service get {
+service verifierToStorage {
   rpc get (getInputMsg) returns (getReturnMsg) {}
   rpc getBlockByNumber (getBlockByNumberInputMsg) returns (blockMsg) {}
   rpc getBlockByHash (getBlockByHashInputMsg) returns (blockMsg) {}
