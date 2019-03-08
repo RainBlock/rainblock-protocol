@@ -3,11 +3,11 @@ syntax = "proto3";
 package verifierToStorageProto;
 
 service get {
-  rpc get (getInputMsg) returns (getReturnMsg) {};
-  rpc getBlockByNumber (getBlockByNumberInputMsg) returns (blockMsg) {};
-  rpc getBlockByHash (getBlockByHashInputMsg) returns (blockMsg) {};
-  rpc getRecentMiner (getRecentMinerInputMsg) returns (getRecentMinerReturnMsg) {};
-  rpc verifyWitness (verifyWitnessInputMsg) returns (verifyWitnessReturnMsg) {};
+  rpc get (getInputMsg) returns (getReturnMsg) {}
+  rpc getBlockByNumber (getBlockByNumberInputMsg) returns (blockMsg) {}
+  rpc getBlockByHash (getBlockByHashInputMsg) returns (blockMsg) {}
+  rpc getRecentMiner (getRecentMinerInputMsg) returns (getRecentMinerReturnMsg) {}
+  rpc verifyWitness (verifyWitnessInputMsg) returns (verifyWitnessReturnMsg) {}
 }
 
 /*
