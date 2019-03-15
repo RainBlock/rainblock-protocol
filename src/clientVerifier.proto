@@ -28,7 +28,7 @@ message TransactionRequest {
 
 // A storage witness, which includes the account used and witnesses for storage accesses
 message StorageWitness {
-  // The 20-byte account this witness is for.
+  // The 20-byte account this witness is for. Should be a big endian integer.
   bytes account = 1;
   // The serialized storage witness, combined into a single binary payload, as specified above.
   bytes witnesses = 2;
