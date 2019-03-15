@@ -1,0 +1,15 @@
+{
+  "name": "@rainblock/protocol",
+  "version": "1.0.0",
+  "description": "Protocol Buffer Definitions for Rainblock",
+  "main": "index.js",
+  "scripts": {
+    "preinstall" : "mkdir -p prototool;curl -sSL https://github.com/uber/prototool/releases/download/v1.3.0/prototool-$(uname -s)-$(uname -m).tar.gz | tar -C prototool --strip-components 1 -xz",
+    "test": "prototool/bin/prototool all"
+  },
+  "author": "Michael Wei <mwei@cs.ucsd.edu>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "git-hooks": "^1.1.10"
+  }
+}
