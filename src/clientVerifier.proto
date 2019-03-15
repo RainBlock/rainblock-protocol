@@ -22,8 +22,10 @@ message TransactionRequest {
   bytes transaction = 1;
   // The serialized account witnesses, combined into a single binary payload, as specified above
   bytes account_witnesses = 2;
+  // Code for accounts which were accessed, if present
+  repeated AccountCode account_code = 3;
   // Serialized storage witnesses for each account, if present
-  repeated StorageWitness storage_witnesses = 3;
+  repeated StorageWitness storage_witnesses = 4;
 }
 
 // A storage witness, which includes the account used and witnesses for storage accesses
@@ -32,6 +34,14 @@ message StorageWitness {
   bytes account = 1;
   // The serialized storage witness, combined into a single binary payload, as specified above.
   bytes witnesses = 2;
+}
+
+// Code for accounts which were accessed, stored with the 20-byte account id.
+message AccountCode {
+    // The 20-byte account this code is for. Should be a big endian integer.
+    bytes account = 1;
+    // The code which corresponds to the account
+    bytes code = 2;
 }
 
 // The error code, indicating whether the transaction was successfully submitted (but not necessarily accepted) by
