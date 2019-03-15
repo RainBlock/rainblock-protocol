@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "preinstall" : "mkdir -p prototool;curl -sSL https://github.com/uber/prototool/releases/download/v1.3.0/prototool-$(uname -s)-$(uname -m).tar.gz | tar -C prototool --strip-components 1 -xz",
-    "test": "prototool/bin/prototool all"
+    "format" : "prototool/bin/prototool all src",
+    "test" : "(prototool/bin/prototool lint src || (echo 'protobuf lint failed, try `npm run format` to fix' && exit 1)) && prototool/bin/prototool all src"
   },
   "author": "Michael Wei <mwei@cs.ucsd.edu>",
   "license": "Apache-2.0",
