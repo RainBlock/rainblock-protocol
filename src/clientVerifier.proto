@@ -1,0 +1,4 @@
+syntax = "proto3";
+
+// Protobuf definitions for client <--> verifier communication
+package rainblock;

@@ -1,0 +1,28 @@
+language: node_js
+node_js:
+- '11'
+sudo: false
+cache:
+  directories:
+  - "$HOME/.npm"
+script: npm run test
+before_deploy:
+- npm pack
+deploy:
+- provider: releases
+  api_key: "$GITHUB_TOKEN"
+  file_glob: true
+  file: rainblock-protocol-*.tgz
+  skip_cleanup: true
+  on:
+    branch: master
+    node: '11'
+    tags: true
+- provider: npm
+  api_key: "$NPM_TOKEN"
+  skip_cleanup: true
+  email: mwei@cs.ucsd.edu
+  on:
+    branch: master
+    node: '11'
+    tags: true
