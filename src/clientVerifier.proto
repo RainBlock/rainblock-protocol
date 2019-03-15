@@ -2,3 +2,51 @@ syntax = "proto3";
 
 // Protobuf definitions for client <--> verifier communication
 package rainblock;
+
+// The verifier service for client <--> verifier
+service Verifier {
+  // Submit a transaction from a client to a verifier
+  rpc SubmitTransaction(TransactionRequest) returns (TransactionResponse);
+}
+
+// Binary format for a witness
+// In the messages below, witnesses are combined into a single binary payload.
+// This means if we have multiple witnesses, we combine them into a single tree, minimizing
+// redundant data that may have to be transmitted.
+// 
+// The binary format is simply a RLP encoded list of all witnesses, with repeats eliminated.
+
+// A request for executing a transaction
+message TransactionRequest {
+  // The RLP-encoded transaction to execute
+  bytes transaction = 1;
+  // The serialized account witnesses, combined into a single binary payload, as specified above
+  bytes account_witnesses = 2;
+  // Serialized storage witnesses for each account, if present
+  repeated StorageWitness storage_witnesses = 3;
+}
+
+// A storage witness, which includes the account used and witnesses for storage accesses
+message StorageWitness {
+  // The 20-byte account this witness is for.
+  bytes account = 1;
+  // The serialized storage witness, combined into a single binary payload, as specified above.
+  bytes witnesses = 2;
+}
+
+// The error code, indicating whether the transaction was successfully submitted (but not necessarily accepted) by
+// the verifier.
+enum ErrorCode {
+  // The transaction request was invalid.
+  ERROR_CODE_INVALID = 0;
+  // The transaction has been successfully submitted to the verifier.
+  ERROR_CODE_SUCCESS = 1;
+  // The transaction contains witnesses which are too stale and cannot be resolved by the verifier.
+  ERROR_CODE_TOO_STALE = 2;
+}
+
+// The response to a transaction submission request.
+message TransactionResponse {
+  // The return response code.
+  ErrorCode code = 1;
+}
