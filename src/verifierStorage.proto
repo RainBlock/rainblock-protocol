@@ -9,9 +9,7 @@ service VerifierStorage {
   rpc Update(UpdateMsg) returns (google.protobuf.Empty);
 }
 
-/*
-** Update (merkle_tree_nodes, operations) => ();
-*/
+// Update (merkle_tree_nodes, operations) => ();
 message UpdateMsg {
   repeated bytes merkle_tree_nodes = 1;
   repeated UpdateOp operations = 2;
