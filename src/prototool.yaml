@@ -36,6 +36,10 @@ protoc:
 
 # Lint directives.
 lint:
+  ignores:
+    - id: REQUEST_RESPONSE_TYPES_IN_SAME_FILE
+      files:
+        - verifierStorage.proto
   # Linter files to ignore.
 #  ignores:
 #    - id: RPC_NAMES_CAMEL_CASE

@@ -3,15 +3,15 @@ syntax = "proto3";
 // protobuf definitions for verifier <--> storage communication
 package rainblock;
 
+import "google/protobuf/empty.proto";
+
 service VerifierStorage {
-  rpc Update(UpdateMsg) returns (EmptyMsg);
+  rpc Update(UpdateMsg) returns (google.protobuf.Empty);
 }
 
-message EmptyMsg {}
-
-//
-//** Update (merkle_tree_nodes, operations) => ();
-//
+/*
+** Update (merkle_tree_nodes, operations) => ();
+*/
 message UpdateMsg {
   repeated bytes merkle_tree_nodes = 1;
   repeated UpdateOp operations = 2;
