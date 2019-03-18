@@ -28,8 +28,8 @@ message TransactionRequest {
 
 // Data for an address, which may include storage witnesses and code.
 message AddressData {
-  // The 20-byte account this witness is for. Should be a big endian integer.
-  bytes account = 1;
+  // The 20-byte address this witness is for. Should be a big endian integer.
+  bytes address = 1;
   // The serialized storage witness, combined into a single binary payload, as specified above.
   bytes storage_witnesses = 2;
   // The code which corresponds to the account, if present.
@@ -48,7 +48,7 @@ enum ErrorCode {
 }
 
 // The response to a transaction submission request.
-message TransactionReply{
+message TransactionReply {
   // The return response code.
   ErrorCode code = 1;
 }
