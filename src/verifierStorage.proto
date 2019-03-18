@@ -1,4 +1,71 @@
 syntax = "proto3";
 
-// Protobuf definitions for verifier <--> storage communication
+// protobuf definitions for verifier <--> storage communication
 package rainblock;
+
+service VerifierStorage {
+  rpc Update(UpdateMsg) returns (EmptyMsg);
+}
+
+message EmptyMsg {}
+
+//
+//** Update (merkle_tree_nodes, operations) => ();
+//
+message UpdateMsg {
+  repeated bytes merkle_tree_nodes = 1;
+  repeated UpdateOp operations = 2;
+}
+
+message UpdateOp {
+  oneof updates {
+    ValueChangeOp value = 1;
+    DeletionOp delete = 2;
+    CreationOp create = 3;
+    ExecutionOp execute = 4;
+  }
+}
+
+message ValueChangeOp {
+  bytes account = 1;
+  bytes value = 2;
+  uint32 changes = 3;
+}
+
+message DeletionOp {
+  bytes account = 1;
+}
+
+message CreationOp {
+  bytes account = 1;
+  bytes value = 2;
+  bytes code = 3;
+  repeated MapType storage = 4;
+}
+
+message MapType {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+message ExecutionOp {
+  bytes account = 1;
+  bytes value = 2;
+  repeated StorageUpdates storage = 3;
+}
+
+message StorageUpdates {
+  oneof updates {
+    StorageInsertion inserts = 1;
+    StorageDeletion deletes = 2;
+  }
+}
+
+message StorageInsertion {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+message StorageDeletion {
+  bytes key = 1;
+}
