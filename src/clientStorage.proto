@@ -2,3 +2,80 @@ syntax = "proto3";
 
 // Protobuf definitions for client <--> storage communication
 package rainblock;
+
+service StorageNode {
+  // Handles get_code_size and copy_code 
+  rpc GetCodeInfo(CodeRequest) returns (CodeReply);
+  // Handles get_code_hash and get_balance 
+  rpc GetAccount(AccountRequest) returns (AccountReply);
+  // Handles get_storage 
+  rpc GetStorage(StorageRequest) returns (StorageReply);
+  rpc GetBlockHash(BlockHashRequest) returns (BlockHashReply);
+}
+
+// Serialization of a MPTN, needed to define a proper RPCWitness 
+message MerklePatriciaTreeNode {
+  bytes encoding = 1; // The RLP encoding of the entire node
+}
+
+// Serialization of the result of a get() on the MPT 
+message RPCWitness {
+  bytes value = 1; // This is an RLP encoding of the account
+  repeated MerklePatriciaTreeNode proof = 2;
+}
+
+// Get the code whose corresponding account is at the provided address.
+// If codeOnly is true, then return only the code bytes; this assumes that
+// the client has previously fetched the codeHash by querying the account.
+// If codeOnly is false, return both a witness for the account as well as the
+// code bytes.
+// This call will return the entirety of the code bytes; the client will locally
+// copy based on an offset. This makes verification simpler,
+// since the client will be able to pass the entire code block to the verifier.
+message CodeRequest {
+  bytes address = 1;
+  bool code_only = 2;
+}
+
+// If request.codeOnly was true, then accountInfo will be empty 
+message CodeReply {
+  AccountReply account_info = 1;
+  bytes code = 2;
+}
+
+// Request the entire RLP encoded value of an account at the given address.
+// This request is also used for account exists requests. Note that this means
+// account existence queries will also pull in the account value, if it exists.
+// This is an optimzation because we are assuming the EVM will soon access an account
+// that it has recently queried for existence.
+message AccountRequest {
+  bytes address = 1;
+}
+
+message AccountReply {
+  bool exists = 1;
+  // witness is serialization of the account RLP value and its corresponding proof 
+  RPCWitness witness = 2;
+}
+
+// Requests the value at the key in the storage trie of the given account 
+message StorageRequest {
+  bytes address = 1;
+  bytes key = 2;
+}
+
+// Returns the value at the key, along with a proof valid for that account's storage trie 
+message StorageReply {
+  RPCWitness witness = 1;
+}
+
+// Request a block hash from the storage node that corresponds to the given block number. 
+message BlockHashRequest {
+  int64 number = 1;
+}
+
+// Storage node returns a list of hashes; a list longer than one indicates the 
+// storage node is aware of unresolved forks that include this block number.
+message BlockHashReply {
+  repeated bytes hashes = 1;
+}

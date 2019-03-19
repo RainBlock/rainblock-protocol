@@ -6,7 +6,7 @@ package rainblock;
 // The verifier service for client <--> verifier
 service Verifier {
   // Submit a transaction from a client to a verifier
-  rpc SubmitTransaction(TransactionRequest) returns (TransactionResponse);
+  rpc SubmitTransaction(TransactionRequest) returns (TransactionReply);
 }
 
 // Binary format for a witness
@@ -22,16 +22,18 @@ message TransactionRequest {
   bytes transaction = 1;
   // The serialized account witnesses, combined into a single binary payload, as specified above
   bytes account_witnesses = 2;
-  // Serialized storage witnesses for each account, if present
-  repeated StorageWitness storage_witnesses = 3;
+  // Code and storage data for accounts which were accesssed.
+  repeated AccountData account_data = 3;
 }
 
-// A storage witness, which includes the account used and witnesses for storage accesses
-message StorageWitness {
-  // The 20-byte account this witness is for. Should be a big endian integer.
-  bytes account = 1;
+// Data for an account which may include storage witnesses and code.
+message AccountData {
+  // The 20-byte address this witness is for. Should be a big endian integer.
+  bytes address = 1;
   // The serialized storage witness, combined into a single binary payload, as specified above.
-  bytes witnesses = 2;
+  bytes storage_witnesses = 2;
+  // The code which corresponds to the account, if present.
+  bytes code = 3;
 }
 
 // The error code, indicating whether the transaction was successfully submitted (but not necessarily accepted) by
@@ -46,7 +48,7 @@ enum ErrorCode {
 }
 
 // The response to a transaction submission request.
-message TransactionResponse {
+message TransactionReply {
   // The return response code.
   ErrorCode code = 1;
 }
