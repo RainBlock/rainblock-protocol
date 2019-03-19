@@ -9,12 +9,23 @@ service VerifierStorage {
   rpc Update(UpdateMsg) returns (google.protobuf.Empty);
 }
 
-// Update (merkle_tree_nodes, operations) => ();
+// UpdateMsg
+// Update            : (merkle_tree_nodes, operations) => ();
+// merkle_tree_nodes : The nodes in the initial layers of the global state trie
+//                     required to verify the sharded state in the storage nodes
+// rlp_block         : An RLP serialized block
+// operations        : An rlp_block and a list of state update operations
+//
 message UpdateMsg {
   repeated bytes merkle_tree_nodes = 1;
-  repeated UpdateOp operations = 2;
+  bytes rlp_block = 2;
+  repeated UpdateOp operations = 3;
 }
 
+// UpdateOp
+// updates   : A state update operation can be either an ValueChangeOp,
+//             DeletionOp, CreationOP or an ExecutionOp
+//
 message UpdateOp {
   oneof updates {
     ValueChangeOp value = 1;
@@ -24,46 +35,64 @@ message UpdateOp {
   }
 }
 
+// ValueChangeOp
+// account : Address of the account to be modified
+// value   : The modified account balance
+// changes : Number of times an account is modified; required to update the
+//           account nonce accordingly
 message ValueChangeOp {
   bytes account = 1;
   bytes value = 2;
   uint32 changes = 3;
 }
 
+// DeletionOp
+// account : Address of the account to be deleted
 message DeletionOp {
   bytes account = 1;
 }
 
+// CreationOp
+// account : Address of the an account to be created
+// value   : Balance of the new account
+// code    : Code to initialize the account with
+// storage : A list of key, value pairs corresponding to the account storage
 message CreationOp {
   bytes account = 1;
   bytes value = 2;
   bytes code = 3;
-  repeated MapType storage = 4;
+  repeated StorageInsertion storage = 4;
 }
 
-message MapType {
-  bytes key = 1;
-  bytes value = 2;
-}
-
+// ExecutionOp
+// account : Address of the account
+// value   : Updated balance
+// storage : Updated storage entries
 message ExecutionOp {
   bytes account = 1;
   bytes value = 2;
-  repeated StorageUpdates storage = 3;
+  repeated StorageUpdate storage = 3;
 }
 
-message StorageUpdates {
+// StorageUpdate
+// update : An account's storage update (to insert new/modified entries or
+//          to delete existing entries)
+message StorageUpdate {
   oneof updates {
     StorageInsertion inserts = 1;
     StorageDeletion deletes = 2;
   }
 }
 
+// StorageInsertion
+// key, value : An account's storage entry to be inserted or updated
 message StorageInsertion {
   bytes key = 1;
   bytes value = 2;
 }
 
+// StorageDeletion
+// key : An entry in an account's storage to be deleted
 message StorageDeletion {
   bytes key = 1;
 }
