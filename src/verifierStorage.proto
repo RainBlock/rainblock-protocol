@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-// protobuf definitions for verifier <--> storage communication
+// Protobuf definitions for verifier <--> storage communication
 package rainblock;
 
 import "clientStorage.proto";
