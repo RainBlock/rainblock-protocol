@@ -6,8 +6,8 @@ package rainblock;
 import "google/protobuf/empty.proto";
 
 service VerifierStorage {
-  // Update rpc updates the storage node with the new block,
-  // given the merkle_tree_nodes, an rlp serialization of the new block and the
+  // Updates the storage node with a new block given,
+  // the merkle_tree_nodes, an rlp serialization of the new block and the
   // state operations corresponding to the new block
   rpc Update(UpdateMsg) returns (google.protobuf.Empty);
 }
