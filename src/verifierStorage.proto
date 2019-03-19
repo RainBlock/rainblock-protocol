@@ -3,7 +3,6 @@ syntax = "proto3";
 // Protobuf definitions for verifier <--> storage communication
 package rainblock;
 
-import "clientStorage.proto";
 import "google/protobuf/empty.proto";
 
 service VerifierStorage {
@@ -15,13 +14,13 @@ service VerifierStorage {
 
 // UpdateMsg contains the information required to update the 
 // storage node with a new block.
-// merkle_tree_nodes : List of RLP encoded nodes in the initial layers of the 
-//                     global state trie required to verify the
+// merkle_tree_nodes : RLP encoded list of RLP serialized nodes in the initial
+//                     layers of the global state trie required to verify the
 //                     sharded state in the storage nodes
 // rlp_block         : RLP serialization of the new block
 // operations        : A list of state update operations for the new block
 message UpdateMsg {
-  repeated rainblock.MerklePatriciaTreeNode merkle_tree_nodes = 1;
+  bytes merkle_tree_nodes = 1;
   bytes rlp_block = 2;
   repeated UpdateOp operations = 3;
 }
