@@ -3,21 +3,25 @@ syntax = "proto3";
 // protobuf definitions for verifier <--> storage communication
 package rainblock;
 
+import "clientStorage.proto";
 import "google/protobuf/empty.proto";
 
 service VerifierStorage {
+  // Update rpc updates the storage node with the new block,
+  // given the merkle_tree_nodes, an rlp serialization of the new block and the
+  // state operations corresponding to the new block
   rpc Update(UpdateMsg) returns (google.protobuf.Empty);
 }
 
-// UpdateMsg
-// Update            : (merkle_tree_nodes, operations) => ();
-// merkle_tree_nodes : The nodes in the initial layers of the global state trie
-//                     required to verify the sharded state in the storage nodes
-// rlp_block         : An RLP serialized block
-// operations        : An rlp_block and a list of state update operations
-//
+// UpdateMsg contains the information required to update the 
+// storage node with a new block.
+// merkle_tree_nodes : List of RLP encoded nodes in the initial layers of the 
+//                     global state trie required to verify the
+//                     sharded state in the storage nodes
+// rlp_block         : RLP serialization of the new block
+// operations        : A list of state update operations for the new block
 message UpdateMsg {
-  repeated bytes merkle_tree_nodes = 1;
+  repeated rainblock.MerklePatriciaTreeNode merkle_tree_nodes = 1;
   bytes rlp_block = 2;
   repeated UpdateOp operations = 3;
 }
@@ -25,7 +29,6 @@ message UpdateMsg {
 // UpdateOp
 // updates   : A state update operation can be either an ValueChangeOp,
 //             DeletionOp, CreationOP or an ExecutionOp
-//
 message UpdateOp {
   oneof updates {
     ValueChangeOp value = 1;
@@ -41,15 +44,15 @@ message UpdateOp {
 // changes : Number of times an account is modified; required to update the
 //           account nonce accordingly
 message ValueChangeOp {
-  bytes account = 1;
-  bytes value = 2;
-  uint32 changes = 3;
+  bytes account = 1; // hex buffer as bytes
+  bytes value = 2; // bigint as bytes
+  uint32 changes = 3; // number as bytes
 }
 
 // DeletionOp
 // account : Address of the account to be deleted
 message DeletionOp {
-  bytes account = 1;
+  bytes account = 1; // hex buffer
 }
 
 // CreationOp
@@ -58,9 +61,9 @@ message DeletionOp {
 // code    : Code to initialize the account with
 // storage : A list of key, value pairs corresponding to the account storage
 message CreationOp {
-  bytes account = 1;
-  bytes value = 2;
-  bytes code = 3;
+  bytes account = 1; // hex buffer as bytes
+  bytes value = 2; // bigint as bytes
+  bytes code = 3; // hex buffer as bytes
   repeated StorageInsertion storage = 4;
 }
 
@@ -69,8 +72,8 @@ message CreationOp {
 // value   : Updated balance
 // storage : Updated storage entries
 message ExecutionOp {
-  bytes account = 1;
-  bytes value = 2;
+  bytes account = 1; // hex buffer as bytes
+  bytes value = 2; // bigint as bytes
   repeated StorageUpdate storage = 3;
 }
 
@@ -87,12 +90,12 @@ message StorageUpdate {
 // StorageInsertion
 // key, value : An account's storage entry to be inserted or updated
 message StorageInsertion {
-  bytes key = 1;
-  bytes value = 2;
+  bytes key = 1; // bigint as bytes
+  bytes value = 2; // bigint as bytes
 }
 
 // StorageDeletion
 // key : An entry in an account's storage to be deleted
 message StorageDeletion {
-  bytes key = 1;
+  bytes key = 1; // bigint as bytes
 }
