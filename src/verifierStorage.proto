@@ -26,7 +26,7 @@ message UpdateMsg {
   repeated UpdateOp operations = 3;
 }
 
-// UpdateOp
+// UpdateOp to update the state in the storage nodes
 // updates   : A state update operation can be either an ValueChangeOp,
 //             DeletionOp, CreationOP or an ExecutionOp
 message UpdateOp {
@@ -38,7 +38,7 @@ message UpdateOp {
   }
 }
 
-// ValueChangeOp
+// ValueChangeOp to modify the balance and nonce of an account in global state
 // account : Address of the account to be modified
 // value   : The modified account balance
 // changes : Number of times an account is modified; required to update the
@@ -49,13 +49,13 @@ message ValueChangeOp {
   uint32 changes = 3; // number as bytes
 }
 
-// DeletionOp
+// DeletionOp to delete an existing account in the global state
 // account : Address of the account to be deleted
 message DeletionOp {
   bytes account = 1; // hex buffer
 }
 
-// CreationOp
+// CreationOp to create a new account in the global state
 // account : Address of the an account to be created
 // value   : Balance of the new account
 // code    : Code to initialize the account with
@@ -67,7 +67,8 @@ message CreationOp {
   repeated StorageInsertion storage = 4;
 }
 
-// ExecutionOp
+// ExecutionOp to modify an accounts balance and storage in the global state 
+// resulting from a contract execution
 // account : Address of the account
 // value   : Updated balance
 // storage : Updated storage entries
@@ -77,7 +78,7 @@ message ExecutionOp {
   repeated StorageUpdate storage = 3;
 }
 
-// StorageUpdate
+// StorageUpdate op to update a global state account's internal storgage
 // update : An account's storage update (to insert new/modified entries or
 //          to delete existing entries)
 message StorageUpdate {
@@ -87,14 +88,14 @@ message StorageUpdate {
   }
 }
 
-// StorageInsertion
+// StorageInsertion op to insert a new storgae entry into a global state account
 // key, value : An account's storage entry to be inserted or updated
 message StorageInsertion {
   bytes key = 1; // bigint as bytes
   bytes value = 2; // bigint as bytes
 }
 
-// StorageDeletion
+// StorageDeletion op to delete an account's internal storage entry
 // key : An entry in an account's storage to be deleted
 message StorageDeletion {
   bytes key = 1; // bigint as bytes
