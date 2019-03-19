@@ -43,26 +43,26 @@ message UpdateOp {
 // changes : Number of times an account is modified; required to update the
 //           account nonce accordingly
 message ValueChangeOp {
-  bytes account = 1; // hex buffer as bytes
-  bytes value = 2; // bigint as bytes
-  uint32 changes = 3; // number as bytes
+  bytes account = 1; // 20 byte big endian account number
+  bytes value = 2; // 32 byte big endian unsigned integer
+  uint32 changes = 3; // big endian uint32 number
 }
 
 // DeletionOp to delete an existing account in the global state
 // account : Address of the account to be deleted
 message DeletionOp {
-  bytes account = 1; // hex buffer
+  bytes account = 1; // 20 byte big endian account number
 }
 
 // CreationOp to create a new account in the global state
 // account : Address of the an account to be created
 // value   : Balance of the new account
-// code    : Code to initialize the account with
+// code    : RLP encoded code to initialize the account with
 // storage : A list of key, value pairs corresponding to the account storage
 message CreationOp {
-  bytes account = 1; // hex buffer as bytes
-  bytes value = 2; // bigint as bytes
-  bytes code = 3; // hex buffer as bytes
+  bytes account = 1; // 20 byte big endian account number
+  bytes value = 2; // 32 byte big endian unsigned integer
+  bytes code = 3; // RLP encoded big endian buffer
   repeated StorageInsertion storage = 4;
 }
 
@@ -72,13 +72,13 @@ message CreationOp {
 // value   : Updated balance
 // storage : Updated storage entries
 message ExecutionOp {
-  bytes account = 1; // hex buffer as bytes
-  bytes value = 2; // bigint as bytes
+  bytes account = 1; // 20 byte big endian account number
+  bytes value = 2; // 32 byte big endian unsigned integer
   repeated StorageUpdate storage = 3;
 }
 
 // StorageUpdate op to update a global state account's internal storgage
-// update : An account's storage update (to insert new/modified entries or
+// updates : An account's storage update (to insert new/modified entries or
 //          to delete existing entries)
 message StorageUpdate {
   oneof updates {
@@ -88,14 +88,15 @@ message StorageUpdate {
 }
 
 // StorageInsertion op to insert a new storgae entry into a global state account
-// key, value : An account's storage entry to be inserted or updated
+// key   : Storage entry to be inserted or updated
+// value : New or updated value of the storage entry
 message StorageInsertion {
-  bytes key = 1; // bigint as bytes
-  bytes value = 2; // bigint as bytes
+  bytes key = 1; // 32 byte big endian unsigned integer
+  bytes value = 2; // 32 byte big endian unsigned integer
 }
 
 // StorageDeletion op to delete an account's internal storage entry
-// key : An entry in an account's storage to be deleted
 message StorageDeletion {
-  bytes key = 1; // bigint as bytes
+  // Storage entry to be deleted
+  bytes key = 1; // 32 byte big endian unsigned integer
 }
