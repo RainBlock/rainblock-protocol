@@ -45,7 +45,7 @@ message UpdateOp {
 message ValueChangeOp {
   bytes account = 1; // 20 byte big endian account number
   bytes value = 2; // 32 byte big endian unsigned integer
-  uint32 changes = 3; // big endian uint32 number
+  uint32 changes = 3;
 }
 
 // DeletionOp to delete an existing account in the global state
@@ -57,12 +57,12 @@ message DeletionOp {
 // CreationOp to create a new account in the global state
 // account : Address of the an account to be created
 // value   : Balance of the new account
-// code    : RLP encoded code to initialize the account with
+// code    : Code to initialize the account with
 // storage : A list of key, value pairs corresponding to the account storage
 message CreationOp {
   bytes account = 1; // 20 byte big endian account number
   bytes value = 2; // 32 byte big endian unsigned integer
-  bytes code = 3; // RLP encoded big endian buffer
+  bytes code = 3;
   repeated StorageInsertion storage = 4;
 }
 
