@@ -14,21 +14,20 @@ service VerifierStorage {
 
 // UpdateMsg contains the information required to update the 
 // storage node with a new block.
-// merkle_tree_nodes : RLP encoded list of RLP serialized nodes in the initial
-//                     layers of the global state trie required to verify the
-//                     sharded state in the storage nodes
-// rlp_block         : RLP serialization of the new block
-// operations        : A list of state update operations for the new block
 message UpdateMsg {
+  // RLP encoded list of RLP serialized nodes in the initial layers of the 
+  // global state trie required to verify the sharded state in the storage nodes
   bytes merkle_tree_nodes = 1;
+  // RLP serialization of the new block
   bytes rlp_block = 2;
+  // A list of state update operations for the new block
   repeated UpdateOp operations = 3;
 }
 
 // UpdateOp to update the state in the storage nodes
-// updates   : A state update operation can be either an ValueChangeOp,
-//             DeletionOp, CreationOP or an ExecutionOp
 message UpdateOp {
+  // A state update operation can be either an ValueChangeOp,
+  // DeletionOp, CreationOP or an ExecutionOp
   oneof updates {
     ValueChangeOp value = 1;
     DeletionOp delete = 2;
@@ -38,49 +37,49 @@ message UpdateOp {
 }
 
 // ValueChangeOp to modify the balance and nonce of an account in global state
-// account : Address of the account to be modified
-// value   : The modified account balance
-// changes : Number of times an account is modified; required to update the
-//           account nonce accordingly
 message ValueChangeOp {
+  // Address of the account to be modified
   bytes account = 1; // 20 byte big endian account number
+  // Modified account balance
   bytes value = 2; // 32 byte big endian unsigned integer
+  // Number of times an account is modified;
+  // required to update the account nonce
   uint32 changes = 3;
 }
 
 // DeletionOp to delete an existing account in the global state
-// account : Address of the account to be deleted
 message DeletionOp {
+  // Address of the account to be deleted
   bytes account = 1; // 20 byte big endian account number
 }
 
 // CreationOp to create a new account in the global state
-// account : Address of the an account to be created
-// value   : Balance of the new account
-// code    : Code to initialize the account with
-// storage : A list of key, value pairs corresponding to the account storage
 message CreationOp {
+  // Address of the an account to be created
   bytes account = 1; // 20 byte big endian account number
+  // Balance of the new account
   bytes value = 2; // 32 byte big endian unsigned integer
+  // Code to initialize the account with
   bytes code = 3;
+  // A list of key, value pairs corresponding to the account storage
   repeated StorageInsertion storage = 4;
 }
 
 // ExecutionOp to modify an accounts balance and storage in the global state 
 // resulting from a contract execution
-// account : Address of the account
-// value   : Updated balance
-// storage : Updated storage entries
 message ExecutionOp {
+  // Address of the account
   bytes account = 1; // 20 byte big endian account number
+  // Account's updated balance
   bytes value = 2; // 32 byte big endian unsigned integer
+  // Account's updated storage entries
   repeated StorageUpdate storage = 3;
 }
 
 // StorageUpdate op to update a global state account's internal storgage
-// updates : An account's storage update (to insert new/modified entries or
-//          to delete existing entries)
 message StorageUpdate {
+  // Storage entries (insert new/modified entries or
+  // delete existing entries)
   oneof updates {
     StorageInsertion inserts = 1;
     StorageDeletion deletes = 2;
@@ -88,10 +87,10 @@ message StorageUpdate {
 }
 
 // StorageInsertion op to insert a new storgae entry into a global state account
-// key   : Storage entry to be inserted or updated
-// value : New or updated value of the storage entry
 message StorageInsertion {
+  // Storage entry to be inserted or updated
   bytes key = 1; // 32 byte big endian unsigned integer
+  // New or updated value of the storage entry
   bytes value = 2; // 32 byte big endian unsigned integer
 }
 
