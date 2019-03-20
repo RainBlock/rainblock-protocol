@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-// Protobuf definitions for client <--> storage communication 
+// Protobuf definitions for client <--> storage communication
 package rainblock;
 
 service StorageNode {

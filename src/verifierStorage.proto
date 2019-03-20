@@ -2,3 +2,100 @@ syntax = "proto3";
 
 // Protobuf definitions for verifier <--> storage communication
 package rainblock;
+
+import "google/protobuf/empty.proto";
+
+service VerifierStorage {
+  // Updates the storage node with a new block given,
+  // the merkle_tree_nodes, an rlp serialization of the new block and the
+  // state operations corresponding to the new block
+  rpc Update(UpdateMsg) returns (google.protobuf.Empty);
+}
+
+// UpdateMsg contains the information required to update the 
+// storage node with a new block.
+message UpdateMsg {
+  // RLP encoded list of RLP serialized nodes in the initial layers of the 
+  // global state trie required to verify the sharded state in the storage nodes
+  bytes merkle_tree_nodes = 1;
+  // RLP serialization of the new block
+  bytes rlp_block = 2;
+  // A list of state update operations for the new block
+  repeated UpdateOp operations = 3;
+}
+
+// UpdateOp to update the state in the storage nodes
+message UpdateOp {
+  // A state update operation can be either an ValueChangeOp,
+  // DeletionOp, CreationOP or an ExecutionOp
+  oneof updates {
+    ValueChangeOp value = 1;
+    DeletionOp delete = 2;
+    CreationOp create = 3;
+    ExecutionOp execute = 4;
+  }
+}
+
+// ValueChangeOp to modify the balance and nonce of an account in global state
+message ValueChangeOp {
+  // Address of the account to be modified
+  bytes account = 1; // 20 byte big endian account number
+  // Modified account balance
+  bytes value = 2; // 32 byte big endian unsigned integer
+  // Number of times an account is modified;
+  // required to update the account nonce
+  uint32 changes = 3;
+}
+
+// DeletionOp to delete an existing account in the global state
+message DeletionOp {
+  // Address of the account to be deleted
+  bytes account = 1; // 20 byte big endian account number
+}
+
+// CreationOp to create a new account in the global state
+message CreationOp {
+  // Address of the an account to be created
+  bytes account = 1; // 20 byte big endian account number
+  // Balance of the new account
+  bytes value = 2; // 32 byte big endian unsigned integer
+  // Code to initialize the account with
+  bytes code = 3;
+  // A list of key, value pairs corresponding to the account storage
+  repeated StorageInsertion storage = 4;
+}
+
+// ExecutionOp to modify an accounts balance and storage in the global state 
+// resulting from a contract execution
+message ExecutionOp {
+  // Address of the account
+  bytes account = 1; // 20 byte big endian account number
+  // Account's updated balance
+  bytes value = 2; // 32 byte big endian unsigned integer
+  // Account's updated storage entries
+  repeated StorageUpdate storage = 3;
+}
+
+// StorageUpdate op to update a global state account's internal storgage
+message StorageUpdate {
+  // Storage entries (insert new/modified entries or
+  // delete existing entries)
+  oneof updates {
+    StorageInsertion inserts = 1;
+    StorageDeletion deletes = 2;
+  }
+}
+
+// StorageInsertion op to insert a new storgae entry into a global state account
+message StorageInsertion {
+  // Storage entry to be inserted or updated
+  bytes key = 1; // 32 byte big endian unsigned integer
+  // New or updated value of the storage entry
+  bytes value = 2; // 32 byte big endian unsigned integer
+}
+
+// StorageDeletion op to delete an account's internal storage entry
+message StorageDeletion {
+  // Storage entry to be deleted
+  bytes key = 1; // 32 byte big endian unsigned integer
+}
