@@ -9,19 +9,17 @@ service Verifier {
   rpc SubmitTransaction(TransactionRequest) returns (TransactionReply);
 }
 
-// Binary format for a witness
-// In the messages below, witnesses are combined into a single binary payload.
-// This means if we have multiple witnesses, we combine them into a single tree, minimizing
-// redundant data that may have to be transmitted.
-// 
-// The binary format is simply a RLP encoded list of all witnesses, with repeats eliminated.
+// Binary format for a set of witnesses	
+// In the messages below, the binary format for a witness set is simply a list
+// of RLP-encoded witnesses, with repeats eliminated. This minimizes the amount
+// of redundant data transmitted.
 
 // A request for executing a transaction
 message TransactionRequest {
   // The RLP-encoded transaction to execute
   bytes transaction = 1;
-  // The serialized account witnesses, combined into a single binary payload, as specified above
-  bytes account_witnesses = 2;
+  // The serialized account witnesses, with format described above
+  repeated bytes account_witnesses = 2;
   // Code and storage data for accounts which were accesssed.
   repeated AccountData account_data = 3;
 }
@@ -30,8 +28,8 @@ message TransactionRequest {
 message AccountData {
   // The 20-byte address this witness is for. Should be a big endian integer.
   bytes address = 1;
-  // The serialized storage witness, combined into a single binary payload, as specified above.
-  bytes storage_witnesses = 2;
+  // The serialized storage witness, with format described above
+  repeated bytes storage_witnesses = 2;
   // The code which corresponds to the account, if present.
   bytes code = 3;
 }
