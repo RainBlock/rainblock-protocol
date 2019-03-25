@@ -8,6 +8,9 @@
     "format": "prototool/bin/prototool all src",
     "test": "(prototool/bin/prototool lint src || (echo 'protobuf lint failed, try `npm run format` to fix' && exit 1)) && prototool/bin/prototool all src"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Michael Wei <mwei@cs.ucsd.edu>",
   "license": "Apache-2.0",
   "devDependencies": {
