@@ -36,6 +36,15 @@ on your project, you can import the protocol definitions, which are usable by li
 like in the example below:
 
 ```
-import { rainblock } from '@rainblock/protocol';
+import { VerifierService, VerifierClient, TransactionRequest, TransactionReply, VerifierStorageService, grpc } from '@rainblock/protocol'
 
+const client = new VerifierClient("localhost:9000", grpc.credentials.createInsecure());
+const request = new TransactionRequest();
+client.submitTransaction(request, (err, reply: TransactionReply) => {
+    if (err) {
+        console.error(err);
+    } else {
+        console.log(reply.getCode());
+    }
+});
 ```
