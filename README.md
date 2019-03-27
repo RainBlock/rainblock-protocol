@@ -22,3 +22,20 @@ $ npm run format
 ```
 
 Which will attempt to format the file so it passes the linter.
+
+
+# Typescript Usage
+
+This repository automatically generates a npm package with typings you can import into your project.
+
+After running
+```
+$ npm install @rainblock/protocol
+```
+on your project, you can import the protocol definitions, which are usable by libraries such as gRPC,
+like in the example below:
+
+```
+import { rainblock } from '@rainblock/protocol';
+
+```

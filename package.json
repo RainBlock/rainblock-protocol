@@ -1,12 +1,18 @@
 {
   "name": "@rainblock/protocol",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Protocol Buffer Definitions for Rainblock",
-  "main": "index.js",
+  "main": "generated/index.js",
+  "types": "generated/index.d.ts",
   "scripts": {
     "preinstall": "mkdir -p prototool;curl -sSL https://github.com/uber/prototool/releases/download/v1.3.0/prototool-$(uname -s)-$(uname -m).tar.gz | tar -C prototool --strip-components 1 -xz",
     "format": "prototool/bin/prototool all src",
-    "test": "(prototool/bin/prototool lint src || (echo 'protobuf lint failed, try `npm run format` to fix' && exit 1)) && prototool/bin/prototool all src"
+    "compile": "npm run generate;tsc -p .",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "generate": "mkdir -p generated;grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./generated --grpc_out=./generated --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` -I src src/*.proto; prototool/bin/prototool generate src",
+    "test": "(prototool/bin/prototool lint src || (echo 'protobuf lint failed, try `npm run format` to fix' && exit 1)) && prototool/bin/prototool all src",
+    "prepublish": "npm run compile"
   },
   "publishConfig": {
     "access": "public"
@@ -18,5 +24,15 @@
   },
   "pre-commit": [
     "test"
-  ]
+  ],
+  "dependencies": {
+    "@types/google-protobuf": "^3.2.7",
+    "@types/node": "^11.11.6",
+    "grpc": "^1.19.0",
+    "grpc-tools": "^1.7.1",
+    "grpc_tools_node_protoc_ts": "^2.5.0",
+    "gts": "^0.9.0",
+    "protobufjs": "^6.8.8",
+    "typescript": "^3.3.4000"
+  }
 }
