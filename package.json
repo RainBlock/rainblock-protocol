@@ -1,9 +1,9 @@
 {
   "name": "@rainblock/protocol",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Protocol Buffer Definitions for Rainblock",
-  "main": "generated/index.js",
-  "types": "generated/index.d.ts",
+  "main": "generated/ts/index.js",
+  "types": "generated/ts/index.d.ts",
   "scripts": {
     "preinstall": "mkdir -p prototool;curl -sSL https://github.com/uber/prototool/releases/download/v1.3.0/prototool-$(uname -s)-$(uname -m).tar.gz | tar -C prototool --strip-components 1 -xz",
     "format": "prototool/bin/prototool all src",
