@@ -69,7 +69,7 @@ lint:
       - FILE_OPTIONS_REQUIRE_JAVA_PACKAGE
 
 # Code generation directives.
-#generate:
+generate:
   # Options that will apply to all plugins of type go and gogo.
 #  go_options:
     # The base import path. This should be the go path of the prototool.yaml file.
@@ -82,7 +82,10 @@ lint:
 #      google/api/http.proto: google.golang.org/genproto/googleapis/api/annotations
 
   # The list of plugins.
-#  plugins:
+  plugins:
+     - name: ts
+       path: ./node_modules/.bin/protoc-gen-ts
+       output: ../generated
       # The plugin name. This will go to protoc with --name_out, so it either needs
       # to be a built-in name (like java), or a plugin name with a binary
       # protoc-gen-name.
