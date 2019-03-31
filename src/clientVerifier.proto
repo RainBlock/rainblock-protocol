@@ -20,18 +20,13 @@ message TransactionRequest {
   bytes transaction = 1;
   // The serialized account witnesses, with format described above
   repeated bytes account_witnesses = 2;
-  // Code and storage data for accounts which were accesssed.
-  repeated AccountData account_data = 3;
-}
-
-// Data for an account which may include storage witnesses and code.
-message AccountData {
-  // The 20-byte address this witness is for. Should be a big endian integer.
-  bytes address = 1;
-  // The serialized storage witness, with format described above
-  repeated bytes storage_witnesses = 2;
-  // The code which corresponds to the account, if present.
-  bytes code = 3;
+  // Any code accessed during the account execution, as raw bytes
+  // Ordering is not required because the code will be hashed by the client
+  // and the hash will be used as the key.
+  repeated bytes code_list = 3;
+  // A "bag" of all storage witnesses accessed during the message call/transaction,
+  // with the same format as the account witnesses described above.
+  repeated bytes storage_witnesses = 4;
 }
 
 // The error code, indicating whether the transaction was successfully submitted (but not necessarily accepted) by
