@@ -20,10 +20,10 @@ message TransactionRequest {
   bytes transaction = 1;
   // The serialized account witnesses, with format described above
   repeated bytes account_witnesses = 2;
-  // Code which was accessed during the account execution, as raw bytes
+  // Any code accessed during the account execution, as raw bytes
   // Ordering is not required because the code will be hashed by the client
   // and the hash will be used as the key.
-  repeated bytes account_code = 3;
+  repeated bytes code_list = 3;
   // A "bag" of all storage witnesses accessed during the message call/transaction,
   // with the same format as the account witnesses described above.
   repeated bytes storage_witnesses = 4;
