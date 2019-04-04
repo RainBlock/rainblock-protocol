@@ -44,4 +44,6 @@ enum ErrorCode {
 message TransactionReply {
   // The return response code.
   ErrorCode code = 1;
+  // The addresses of any accounts that the verifier has discovered have stale witnesses
+  repeated bytes stale_addresses = 2;
 }
