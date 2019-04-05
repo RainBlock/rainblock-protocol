@@ -13,15 +13,11 @@ service StorageNode {
   rpc GetBlockHash(BlockHashRequest) returns (BlockHashReply);
 }
 
-// Serialization of a MPTN, needed to define a proper RPCWitness 
-message MerklePatriciaTreeNode {
-  bytes encoding = 1; // The RLP encoding of the entire node
-}
-
 // Serialization of the result of a get() on the MPT 
 message RPCWitness {
   bytes value = 1; // This is an RLP encoding of the account
-  repeated MerklePatriciaTreeNode proof = 2;
+  // Each proof is an RLP encoding of a MerklePatriciaTreeNode
+  repeated bytes proof_list = 2;
 }
 
 // Get the code whose corresponding account is at the provided address.
