@@ -28,7 +28,7 @@ message UpdateMsg {
 message UpdateOp {
   bytes account = 1; // 20 bytes, BE account number
   bytes balance = 2; //  32 bytes, BE new balance. May not be present if the balance is unchanged.
-  uint32 updates = 3; // Increment by one for each nonce update. May not be present if the nonce is unchanged.
+  uint64 nonce = 3; // 8 bytes, new nonce. May not be present if the nonce is unchanged.
   repeated StorageUpdate storage_update = 4; // Storage updates, if any.
   bytes code = 5; // Code bytes, only applicable for creation of a contract account.
   bool deleted = 6; // Set if the account was deleted. All other fields, if present, are ignored.
