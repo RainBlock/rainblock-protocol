@@ -1,6 +1,6 @@
 {
   "name": "@rainblock/protocol",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Protocol Buffer Definitions for Rainblock",
   "main": "generated_ts/index.js",
   "types": "generated_ts/index.d.ts",

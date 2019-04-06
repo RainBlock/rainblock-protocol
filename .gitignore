@@ -2,3 +2,4 @@ prototool
 node_modules
 .github
 generated
+generated_ts
