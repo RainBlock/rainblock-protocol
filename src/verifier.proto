@@ -1,12 +1,49 @@
 syntax = "proto3";
 
-// Protobuf definitions for client <--> verifier communication
+// Protobuf definitions for client <--> verifier, verifier <--> verifier communication
 package rainblock;
 
-// The verifier service for client <--> verifier
+// The verifier service
 service Verifier {
   // Submit a transaction from a client to a verifier
   rpc SubmitTransaction(TransactionRequest) returns (TransactionReply);
+  // Verifier-Verifer services below:
+  // Advertise a new node to other verifiers
+  rpc AdvertiseNode(stream MerkleNodeAdvertisement) returns (stream MerkleNodeAdvertisement);
+  // Block announcement
+  rpc AdvertiseBlock(stream BlockAdvertisement) returns (stream BlockAdvertisement);
+  // Neighbor Advertisement
+  rpc AdvertiseNeighbor(stream NeighborAdvertisement) returns (stream NeighborAdvertisement);
+  // Handshake
+  rpc VerifierVerifierHandshake(VerifierVerifierHandshakeMessage) returns (VerifierVerifierHandshakeMessage);
+}
+
+// A message indicating new neighbors which have connected or disconnected
+message NeighborAdvertisement {
+  // new neighbors, by their 32 byte BE beneficiary ID
+  repeated bytes new_neighbors = 1;
+  // lost/disconnected neighbors, by their 32 byte BE beneficiary ID
+  repeated bytes lost_neightbors = 2;
+}
+
+// A handshake message between two verifiers. Either verifier can disconnect the link as a result of the handshake.
+message VerifierVerifierHandshakeMessage {
+  // The protocol version
+  string protocol_version = 1;
+  // The verifier version
+  string version = 2;
+}
+
+// Advertisement of a new block
+message BlockAdvertisement {
+  // The block being advertised, as RLP-encoded bytes
+  bytes block = 1;
+}
+
+// Advertisement of a new node
+message MerkleNodeAdvertisement {
+  // The node(s) being advertised, as RLP-encoded bytes
+  repeated bytes node = 1;
 }
 
 // Binary format for a set of witnesses	
