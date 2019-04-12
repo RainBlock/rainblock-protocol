@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+// Protobuf definitions for client <--> verifier, verifier <--> verifier communication
+package rainblock;
+
+// The verifier service
+service Verifier {
+  // Submit a transaction from a client to a verifier
+  rpc SubmitTransaction(TransactionRequest) returns (TransactionReply);
+  // Verifier-Verifer services below:
+  // Advertise a new node to other verifiers
+  rpc AdvertiseNode(stream MerkleNodeAdvertisement) returns (stream MerkleNodeAdvertisement);
+  // Block announcement
+  rpc AdvertiseBlock(stream BlockAdvertisement) returns (stream BlockAdvertisement);
+  // Neighbor Advertisement
+  rpc AdvertiseNeighbor(stream NeighborAdvertisement) returns (stream NeighborAdvertisement);
+  // Handshake
+  rpc VerifierVerifierHandshake(VerifierVerifierHandshakeMessage) returns (VerifierVerifierHandshakeMessage);
+}
+
+// A message indicating new neighbors which have connected or disconnected
+message NeighborAdvertisement {
+  // new neighbors, by their 32 byte BE beneficiary ID
+  repeated bytes new_neighbors = 1;
+  // lost/disconnected neighbors, by their 32 byte BE beneficiary ID
+  repeated bytes lost_neightbors = 2;
+}
+
+// A handshake message between two verifiers. Either verifier can disconnect the link as a result of the handshake.
+message VerifierVerifierHandshakeMessage {
+  // The protocol version
+  string protocol_version = 1;
+  // The verifier version
+  string version = 2;
+}
+
+// Advertisement of a new block
+message BlockAdvertisement {
+  // The block being advertised, as RLP-encoded bytes
+  bytes block = 1;
+}
+
+// Advertisement of a new node
+message MerkleNodeAdvertisement {
+  // The node(s) being advertised, as RLP-encoded bytes
+  repeated bytes node = 1;
+}
+
+// Binary format for a set of witnesses	
+// In the messages below, the binary format for a witness set is simply a list
+// of RLP-encoded witnesses, with repeats eliminated. This minimizes the amount
+// of redundant data transmitted.
+
+// A request for executing a transaction
+message TransactionRequest {
+  // The RLP-encoded transaction to execute
+  bytes transaction = 1;
+  // The serialized account witnesses, with format described above
+  repeated bytes account_witnesses = 2;
+  // Any code accessed during the account execution, as raw bytes
+  // Ordering is not required because the code will be hashed by the client
+  // and the hash will be used as the key.
+  repeated bytes code_list = 3;
+  // A "bag" of all storage witnesses accessed during the message call/transaction,
+  // with the same format as the account witnesses described above.
+  repeated bytes storage_witnesses = 4;
+}
+
+// The error code, indicating whether the transaction was successfully submitted (but not necessarily accepted) by
+// the verifier.
+enum ErrorCode {
+  // The transaction request was invalid.
+  ERROR_CODE_INVALID = 0;
+  // The transaction has been successfully submitted to the verifier.
+  ERROR_CODE_SUCCESS = 1;
+  // The transaction contains witnesses which are too stale and cannot be resolved by the verifier.
+  ERROR_CODE_TOO_STALE = 2;
+}
+
+// The response to a transaction submission request.
+message TransactionReply {
+  // The return response code.
+  ErrorCode code = 1;
+  // The addresses of any accounts that the verifier has discovered have stale witnesses
+  repeated bytes stale_addresses = 2;
+}
