@@ -1,5 +1,5 @@
-import { VerifierService, VerifierClient, IVerifierServer, IVerifierClient } from '../generated/clientVerifier_grpc_pb'
-import { TransactionRequest, TransactionReply, ErrorCode } from '../generated/clientVerifier_pb';
+import { VerifierService, VerifierClient, IVerifierServer, IVerifierClient } from '../generated/verifier_grpc_pb'
+import { MerkleNodeAdvertisement, BlockAdvertisement, NeighborAdvertisement, VerifierVerifierHandshakeMessage, TransactionRequest, TransactionReply, ErrorCode } from '../generated/verifier_pb';
 import { VerifierStorageService, VerifierStorageClient, IVerifierStorageClient, IVerifierStorageService, IVerifierStorageServer } from '../generated/verifierStorage_grpc_pb'
 import { UpdateMsg, UpdateOp, StorageUpdate } from '../generated/verifierStorage_pb';
 import { StorageNodeClient, StorageNodeService, IStorageNodeClient, IStorageNodeServer } from '../generated/clientStorage_grpc_pb';
@@ -14,5 +14,6 @@ export { VerifierService, VerifierClient, TransactionRequest, TransactionReply, 
     IVerifierStorageServer, UpdateMsg, UpdateOp, StorageUpdate,
     StorageNodeClient, StorageNodeService, IStorageNodeClient, IStorageNodeServer,
     RPCWitness, CodeRequest, CodeReply, AccountRequest, AccountReply, 
+    MerkleNodeAdvertisement, BlockAdvertisement, NeighborAdvertisement, VerifierVerifierHandshakeMessage,
     StorageRequest, StorageReply, BlockHashReply, BlockHashRequest,
     IVerifierStorageService, google_protobuf_empty_pb, grpc };
