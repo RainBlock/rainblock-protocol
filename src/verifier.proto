@@ -32,6 +32,8 @@ message VerifierVerifierHandshakeMessage {
   string protocol_version = 1;
   // The verifier version
   string version = 2;
+  // The beneficiary ID, 32 bytes BE
+  bytes beneficiary = 3;
 }
 
 // Advertisement of a new block
