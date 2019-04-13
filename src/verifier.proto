@@ -20,9 +20,9 @@ service Verifier {
 
 // A message indicating new neighbors which have connected or disconnected
 message NeighborAdvertisement {
-  // new neighbors, by their 32 byte BE beneficiary ID
+  // new neighbors, by their 32 byte big endian beneficiary ID
   repeated bytes new_neighbors = 1;
-  // lost/disconnected neighbors, by their 32 byte BE beneficiary ID
+  // lost/disconnected neighbors, by their 32 byte big endian beneficiary ID
   repeated bytes lost_neightbors = 2;
 }
 
@@ -32,6 +32,8 @@ message VerifierVerifierHandshakeMessage {
   string protocol_version = 1;
   // The verifier version
   string version = 2;
+  // The beneficiary ID, 32 bytes big endian
+  bytes beneficiary = 3;
 }
 
 // Advertisement of a new block
