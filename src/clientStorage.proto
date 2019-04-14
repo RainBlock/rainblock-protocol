@@ -7,7 +7,7 @@ service StorageNode {
   // Handles get_code_size and copy_code 
   rpc GetCodeInfo(CodeRequest) returns (CodeReply);
   // Handles get_code_hash and get_balance 
-  rpc GetAccount(AccountRequest) returns (AccountReply);
+  rpc GetAccounts(AccountsRequest) returns (AccountsReply);
   // Handles get_storage 
   rpc GetStorage(StorageRequest) returns (StorageReply);
   rpc GetBlockHash(BlockHashRequest) returns (BlockHashReply);
@@ -44,14 +44,21 @@ message CodeReply {
 // account existence queries will also pull in the account value, if it exists.
 // This is an optimzation because we are assuming the EVM will soon access an account
 // that it has recently queried for existence.
-message AccountRequest {
-  bytes address = 1;
+message AccountsRequest {
+  repeated bytes addresses = 1;
 }
 
 message AccountReply {
   bool exists = 1;
   // witness is serialization of the account RLP value and its corresponding proof 
   RPCWitness witness = 2;
+}
+
+// The order of these accounts should be the EXACT SAME order as the addresses
+// in the corresponding AccountsRequest message. This prevents us from having to
+// create some map from address to AccountReply.
+message AccountsReply {
+  repeated AccountReply accounts = 1;
 }
 
 // Requests the value at the key in the storage trie of the given account 
